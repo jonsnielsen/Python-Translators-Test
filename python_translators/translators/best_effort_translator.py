@@ -27,28 +27,32 @@ class BestEffortTranslator(CompositeParallelTranslator):
             self.add_translator(t)
 
         else:
+            google_translator_key = get_key_from_config('GOOGLE_TRANSLATE_API_KEY')
+            microsoft_translator_key = get_key_from_config('MICROSOFT_TRANSLATE_API_KEY')
 
-            # Google Translator WITH context
-            t = GoogleTranslatorFactory.build_with_context(**lang_config)
-            t.quality = 95
-            self.add_translator(t)
+            if google_translator_key != "":
 
-            # Microsoft Translator WITH context
+                # Google Translator WITH context
+                t = GoogleTranslatorFactory.build_with_context(**lang_config)
+                t.quality = 95
+                self.add_translator(t)
 
-            t = MicrosoftTranslatorFactory.build_with_context(**lang_config)
-            t.quality = 80
-            self.add_translator(t)
-   
-            # Google Translator WITHOUT context
-            t = GoogleTranslatorFactory.build_contextless(**lang_config)
-            t.quality = 70
-            self.add_translator(t)
+                # Google Translator WITHOUT context
+                t = GoogleTranslatorFactory.build_contextless(**lang_config)
+                t.quality = 70
+                self.add_translator(t)
 
-            # Microsoft Translator without context
-    
-            t = MicrosoftTranslatorFactory.build_contextless(**lang_config)
-            t.quality = 60
-            self.add_translator(t)
+            if microsoft_translator_key != "":
+
+                # Microsoft Translator WITH context
+                t = MicrosoftTranslatorFactory.build_with_context(**lang_config)
+                t.quality = 80
+                self.add_translator(t)
+        
+                # Microsoft Translator without context
+                t = MicrosoftTranslatorFactory.build_contextless(**lang_config)
+                t.quality = 60
+                self.add_translator(t)
         
 
         self.set_cache(MemoryCache(translator_type='best_effort_translator'))
